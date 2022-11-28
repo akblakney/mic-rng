@@ -1,8 +1,5 @@
 # contains methods used to read params from command line arguments
 
-from my_exception import MyException
-
-
 # args is args list
 # target is string to search for in args list
 # if target in args list, return the value set in args
@@ -16,7 +13,7 @@ def set_param_int(args, target, default_value):
     try:
         return int(args[args.index(target) + 1])
     except:
-        raise MyException(msg)
+        raise BaseException(msg)
 
 def set_param_gen(args, target, default_value, msg):
     if not target in args:
@@ -24,7 +21,7 @@ def set_param_gen(args, target, default_value, msg):
     try:
         return args[args.index(target) + 1]
     except:
-        raise MyException(msg)
+        raise BaseException(msg)
 
 
 # args is the args list
