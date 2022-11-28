@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # install dependencies
-#sudo apt install python3-pyaudio
+sudo apt install python3-pyaudio
 
 # generate run script
 touch ./run.sh
