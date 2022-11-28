@@ -41,6 +41,8 @@ OR
 
 which will output 64 random bytes in the form of printable ASCII characters to `stdout`.
 
+**If the program just stalls and nothing is output:** try unplugging and re-plugging in your mic. This has happened to me before, and it is because for some reason pyaudio isn't getting your audio so the program stalls waiting for input.
+
 ## Intuition and Technical Details
 
 Another project of mine, an [implementation](https://github.com/akblakney/Von-Neumann-randomness-extractor) of the Von Neumann extractor in C, gives a good overview of random number generators (RNGs) and the "extraction" step in them. Briefly, to make a RNG, we need two things: an entropy source, and an extraction method. The entropy source needs to be something unpredictable, like atmospheric noise or electrical noise. And the extraction method needs to take that entropy and transform it into [independent and identically distributed](https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables), or i.i.d., random variables. 
