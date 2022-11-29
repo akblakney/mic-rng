@@ -32,6 +32,8 @@ Options:
      entropy per bit of hashed output). It is not recommended to use less than
      the default value of 6400.
 
+  -p uses matplotlib library to plot the raw input used to generate random output
+     matplotlib library must be installed.
 Examples:
 
   python3 rng.py -n 16 -f ascii
