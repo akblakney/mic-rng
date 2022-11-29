@@ -22,7 +22,7 @@ Options:
 
   -f <format> gives the format of the output. Current supported formats are
      raw bytes (the default if none is specified), ascii, alpha-numeric,
-     dicewire, dicewire-alt, hex.
+     decimal digits, hex.
 
   -i <byte_interval> sets the interval between bytes considered by the Von
      Neumann extractor. The default is 128, but any even positive integer
