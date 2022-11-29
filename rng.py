@@ -17,7 +17,6 @@ DEFAULT_FORMAT = 'bytes'
 DEFAULT_BYTE_INTERVAL = 128
 DEFAULT_BLOCK_SIZE = 6400
 
-
 if __name__ == '__main__':
 
   # help page
@@ -52,6 +51,10 @@ if __name__ == '__main__':
 
   if '-r' in sys.argv:
     num_bytes = math.inf
+  
+  plot = False
+  if '-p' in sys.argv:
+    plot = True
 
   # burn-in loop
   while len(_buffer) < BURN_IN_BYTES:
@@ -71,6 +74,7 @@ if __name__ == '__main__':
     h = blake2b()
 
   bytes_written = 0
+  to_plot = []
 
   # main loop
   while bytes_written < num_bytes:
@@ -80,8 +84,15 @@ if __name__ == '__main__':
     if available <= min(block_size, 2 * byte_interval):
       time.sleep(SLEEP_TIME)
       continue
+    
+    b = stream.read(available)
 
-    _buffer.extend(stream.read(available))
+    # if we're plotting, populate the plot array
+    if plot:
+      for i in range(0, len(b) - 2, 2):
+        to_plot.append(int.from_bytes(b[i:i+2], byteorder='little', signed=True))
+
+    _buffer.extend(b)
 
     # extract
     if extract_method == 'von_neumann':
@@ -105,4 +116,13 @@ if __name__ == '__main__':
   # add a newline at the end if we're not doing bytes
   if _format != 'bytes':
     print()
+
+  # plot
+  if plot:
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.plot(to_plot)
+    ax.set_facecolor('black')
+    fig.suptitle('raw signal over time')
+    plt.show()
 
