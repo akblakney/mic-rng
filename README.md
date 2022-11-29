@@ -57,6 +57,27 @@ My main motivation for making this project in addition to my [previous](https://
 
 Another convenient thing about Python is that they have hash functions built in, so I can include a hash extraction option out of the box, without requiring users to go install a separate hash library. The hash extraction option is a good one to have because it is far more efficient than Von Neumann extraction.
 
-## Plotting Functionality
+### Plotting Functionality
 
-Any true random number generator (TRNG), as opposed to a pseudo-random number generator (PRNG) needs a physical source of entropy
+Any true random number generator (TRNG), as opposed to a pseudo-random number generator (PRNG), needs a physical source of entropy. This introduces a point-of-failure in the hardware. For example, in this project we use microphone input as the source of our entropy, therefoore making the assumtion that the microphone output will have enough electrical noise to prduce a random output. But suppose that our microphone is not behaving in a manner that produces a lot of entropy. Suppose it cycles through a predictable set of values—or even worse, repeats the same value (such as 0) all the time. It is important to detect this type of situation; otherwise, you will end up using predictable, potentially deterministic values assuming they are random. 
+
+By allowing the user to visualize the raw data coming from the microphone, they can easily check that one of these scenarios is not happening. Hence the plotting functionality: with the `-p` flag, a plot of the raw waveform using `matplotlib` is plotted and shown to the user. There is no set formula to determining whether the output is entropic enough for use as the input to a RNG. The user must use some common sense: plots which look unpredictable are probably fine, while plots that have a cyclical or otherwise predictable pattern to them are probably not good.
+
+## usage and output
+
+Generate 64 bytes worth of printable ASCII characters, and use the plotting functionality to verify that the microphone input was entropic enough for us to reasonably consider our output random:
+
+```
+$ mic-rng -f ascii -p
+$ xoD@qn^QOi~z^|NA:dwRE~+5EezaLbL:(jvhOH{
+```
+
+And the full plot of the microphone input:
+
+![h](figures/full_plot.png)
+
+And a zoomed in plot of around 1,000 values (around 0.02 seconds):
+
+![h](figures/zoomed_in.png)
+
+As you can see, the zoomed out version looks unpredictable overall. But what is more important is that within small areas, there is enough noise. As you can see, in the zoomed in plot, these values fluctuate unpredictably.
