@@ -6,10 +6,12 @@
 
 ## Installation and Dependencies
 
-The only requirements are: 
+For basic functionality of the program, the only requirements are: 
 
 1. that Python3 is installed, and 
 2. that the python library pyaudio is installed.
+
+And for the additional plotting functionality, which allows the user to see the plot of the raw microphone data used to generate the random output, there is an additional dependency of the matplotlib library for python. This is only necessary when running the program with the `-p` flag.
 
 Once these are satisfied, the program can be run with `python3 rng.py [OPTIONS]`. (And of course, you must have a microphone connected!). For Debian-based systems, I've provided a script, `install.sh`, that instsalls pyaudio, generates a convenient run script, and places a symbolic link to it in `/usr/local/bin`. After using the install script, users should be able to run the program with `mic-rng [OPTIONS]` (as long as `/usr/local/bin` is in your PATH, which it usually is by default).
 
@@ -54,3 +56,7 @@ You can see yourself that running the program with the hash extraction method (w
 My main motivation for making this project in addition to my [previous](https://github.com/akblakney/Von-Neumann-randomness-extractor) Von Neumann extractor project mentioned above, is that the previous one is implemented in C which makes interfacing with libraries and external hardware (microphone) a bit more complicated. I think this project is cleaner in terms of functionality: Once everything is setup, there is no need to pre-record a `.wav` file to generate random numbers; in fact as long as you have a mic connected you can get output immediately with `mic-rng -f ascii` (prints random ascii characters).
 
 Another convenient thing about Python is that they have hash functions built in, so I can include a hash extraction option out of the box, without requiring users to go install a separate hash library. The hash extraction option is a good one to have because it is far more efficient than Von Neumann extraction.
+
+## Plotting Functionality
+
+Any true random number generator (TRNG), as opposed to a pseudo-random number generator (PRNG) needs a physical source of entropy
