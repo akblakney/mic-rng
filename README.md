@@ -63,7 +63,26 @@ Any true random number generator (TRNG), as opposed to a pseudo-random number ge
 
 By allowing the user to visualize the raw data coming from the microphone, they can easily check that one of these scenarios is not happening. Hence the plotting functionality: with the `-p` flag, a plot of the raw waveform using `matplotlib` is plotted and shown to the user. There is no set formula to determining whether the output is entropic enough for use as the input to a RNG. The user must use some common sense: plots which look unpredictable are probably fine, while plots that have a cyclical or otherwise predictable pattern to them are probably not good.
 
-## Usage and Output
+## Examples with Output
+
+Output 1,000 bytes (1KB) to a file:
+
+```
+$ mic-rng -n 1000 > random_data
+```
+
+Output 10,000 bytes (10KB) to a file, using hash extraction (this would take a very long time with the Von Neumann extraction mode, even with a small `byte_interval` value, but with hash extraction it takes around 11 seconds):
+
+```
+$ mic-rng -n 10000 --hash > random_data
+```
+
+Output 32 bytes worth of alpha-numeric characters:
+
+```
+$ mic-rng -f alpha-numeric -n 32
+ptmjwwgw8xfnu80ea4swz6cbil7oioaq
+```
 
 Generate 64 bytes worth of printable ASCII characters, and use the plotting functionality to verify that the microphone input was entropic enough for us to reasonably consider our output random:
 
