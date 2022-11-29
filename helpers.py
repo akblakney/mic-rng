@@ -4,8 +4,15 @@ def show_help():
   print('''
 ***** mic-rng *****
 Usage: python3 rng.py [OPTIONS]
+
 Synopsis: Reads raw data from the microphone and uses it to produce a random
-  output, which is printed to stdout. 
+  output, which is printed to stdout. If nothing is being output, try unplugging
+  and re-plugging in your mic. You also don't have to use a standard mic;
+  any device that can be plugged into the line-in would work. For example,
+  hooking up a radio and tuning it inbetween stations so that the output
+  is atmospheric nooise, and then hooking that up to the microphone jack
+  would be ideal.
+
 Options: 
   -h bring up this help menu
 
@@ -34,6 +41,7 @@ Options:
 
   -p uses matplotlib library to plot the raw input used to generate random output
      matplotlib library must be installed.
+
 Examples:
 
   python3 rng.py -n 16 -f ascii
