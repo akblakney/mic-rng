@@ -56,6 +56,12 @@ if __name__ == '__main__':
   if '-p' in sys.argv:
     plot = True
 
+  # initialize extraction variables
+  if extract_method == 'von_neumann':
+    vn = VonNeumann()
+  elif extract_method == 'hash':
+    h = blake2b()
+
   # burn-in loop
   while len(_buffer) < BURN_IN_BYTES:
     available = stream.get_read_available()
@@ -64,15 +70,15 @@ if __name__ == '__main__':
       continue
 
     _buffer.extend(stream.read(available))
+
+  # if we are hash extracting, hash the burn-in too, as it doesn't make sense
+  # to waste it
+  if extract_method == 'hash':
+    h.update(_buffer[:BURN_IN_BYTES])
     
   # variables for main loop
   _buffer = _buffer[BURN_IN_BYTES:]
   
-  if extract_method == 'von_neumann':
-    vn = VonNeumann()
-  elif extract_method == 'hash':
-    h = blake2b()
-
   bytes_written = 0
   to_plot = []
 
