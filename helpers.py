@@ -155,3 +155,5 @@ def convert_bytes(s, _format):
     return digits_from_bytes(s)
   elif _format == 'bytes':
     return s
+  else:
+    raise BaseException('invalid format type') 
