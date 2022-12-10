@@ -51,7 +51,7 @@ Examples:
 
   python3 rng.py -n 1000 -i 16 > random_data
     Output 1kb (1,000 bytes) of random data to the file random_data in the form
-    of raw bytes (random_data will be a binary file). Alos, the -i flag specifies
+    of raw bytes (random_data will be a binary file). Also, the -i flag specifies
     that the Von Neumann generator will consider bytes that are 16 apart, which
     will be more efficient than the default value of 128 (8 times as fast), but
     potentially not as robust (no test results have been able to prove that
