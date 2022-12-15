@@ -1,5 +1,10 @@
 ''' helper methods '''
 
+ALPHA_LOWER = 'abcdefghijklmnopqrstuvwxyz'
+ALPHA_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+DIGITS = '0123456789'
+SYMBOLS = '~!@#$%^&*()-_=+[{]}|;:\'\",<.>/?'
+
 def show_help():
   print('''
 ***** mic-rng *****
@@ -98,49 +103,37 @@ def unbiased_randint(_bytes, a, b):
   # adjust to fit in range
   return ret + a
 
-# get ascii from bytearray
-def ascii_from_bytes(b):
-    ret = ''
-    ascii_list = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=~!@#$%^&*()_+[]{};\':\",./<>?|'
-    n = len(ascii_list)
+# return string containing random characters from l based on byte values
+# in b
+def rand_chars_from_list(b, l):
 
-    for i in range(len(b)):
-        r = unbiased_randint(b[i:i+1], 0, n)
-        if r is None:
-            continue
-        curr = ascii_list[r]
-        ret = '{}{}'.format(ret, curr)
-    return ret
-
-# alphanumeric with lower case
-def alpha_numeric_from_bytes(b):
+  n = len(l)
   ret = ''
-  an_list = 'abcdefghijklmnopqrstuvwxyz0123456789'
-  n = len(an_list)
-  
+
   for i in range(len(b)):
     r = unbiased_randint(b[i:i+1], 0, n)
     if r is None:
       continue
-    curr = an_list[r]
+    curr = l[r]
     ret = '{}{}'.format(ret, curr)
+  
   return ret
 
-# get digit from single byte
-# we are using the unbiased sampling method meaning there is a chance of
-# failure, in which case None is returned
-def digit_from_byte(x):
-  return unbiased_randint([x], 0, 10)
+# get ascii from bytearray
+def ascii_from_bytes(b):
+  return rand_chars_from_list(b, ALPHA_LOWER + ALPHA_UPPER + DIGITS + SYMBOLS)
+
+# alphanumeric with lower case
+def alpha_numeric_from_bytes(b):
+  return rand_chars_from_list(b, ALPHA_LOWER + DIGITS)  
+
+# alphanumeric thats case sensitive
+def alpha_numeric_case_sensitive_from_bytes(b):
+  return rand_chars_from_list(b, ALPHA_LOWER + ALPHA_UPPER + DIGITS)  
 
 # b is a byte array, generate digits accordingly
 def digits_from_bytes(b):
-    ret = ''
-    for x in b:
-        curr = digit_from_byte(x)
-        if curr is not None:
-            ret = '{}{}'.format(ret, digit_from_byte(x))
-
-    return ret
+  return rand_chars_from_list(b, DIGITS)
 
 # Helper method to convert bytes to different formats
 # take in bytes (s) and a format, output the bytes converted to the format
@@ -151,6 +144,8 @@ def convert_bytes(s, _format):
     return ascii_from_bytes(s)
   elif _format == 'alpha-numeric':
     return alpha_numeric_from_bytes(s)
+  elif _format == 'Alpha-numeric':
+    return alpha_numeric_case_sensitive_from_bytes(s)
   elif _format == 'digits':
     return digits_from_bytes(s)
   elif _format == 'bytes':
