@@ -77,6 +77,8 @@ if __name__ == '__main__':
     h.update(_buffer[:BURN_IN_BYTES])
     
   # variables for main loop
+
+  # get rid of burn in bytes
   _buffer = _buffer[BURN_IN_BYTES:]
   
   bytes_written = 0
@@ -85,7 +87,7 @@ if __name__ == '__main__':
   # main loop
   while bytes_written < num_bytes:
 
-    # read in available bytes
+    # sleep until we have enough bytes, then read them into buffer
     available = stream.get_read_available()
     if available <= min(block_size, 2 * byte_interval):
       time.sleep(SLEEP_TIME)
