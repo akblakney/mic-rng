@@ -15,7 +15,7 @@ Synopsis: Reads raw data from the microphone and uses it to produce a random
   and re-plugging in your mic. You also don't have to use a standard mic;
   any device that can be plugged into the line-in would work. For example,
   hooking up a radio and tuning it inbetween stations so that the output
-  is atmospheric nooise, and then hooking that up to the microphone jack
+  is atmospheric noise, and then hooking that up to the microphone jack
   would be ideal.
 
 Options: 

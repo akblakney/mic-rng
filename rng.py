@@ -42,7 +42,10 @@ if __name__ == '__main__':
   num_bytes = set_param_int(sys.argv, '-n', DEFAULT_NUM_BYTES)
   _format = set_param_gen(sys.argv, '-f', DEFAULT_FORMAT,
     'must give format after -f flag')
+
   byte_interval = set_param_int(sys.argv, '-i', DEFAULT_BYTE_INTERVAL)
+  if byte_interval % 2 != 0:
+    raise BaseException('byte interval must be even')
 
   extract_method = 'von_neumann'
   if '--hash' in sys.argv:
@@ -61,6 +64,13 @@ if __name__ == '__main__':
     vn = VonNeumann()
   elif extract_method == 'hash':
     h = blake2b()
+
+  # init plot
+  even_bytes = dict()
+  odd_bytes = dict()
+  for i in range(256):
+    even_bytes[i] = 0
+    odd_bytes[i] = 0
 
   # burn-in loop
   while len(_buffer) < BURN_IN_BYTES:
@@ -82,7 +92,8 @@ if __name__ == '__main__':
   _buffer = _buffer[BURN_IN_BYTES:]
   
   bytes_written = 0
-  to_plot = []
+  to_plot_le = []
+  to_plot_be = []
 
   # main loop
   while bytes_written < num_bytes:
@@ -98,7 +109,10 @@ if __name__ == '__main__':
     # if we're plotting, populate the plot array
     if plot:
       for i in range(0, len(b) - 2, 2):
-        to_plot.append(int.from_bytes(b[i:i+2], byteorder='little', signed=True))
+        to_plot_le.append(int.from_bytes(b[i:i+2], byteorder='little', signed=True))
+        to_plot_be.append(int.from_bytes(b[i:i+2], byteorder='big', signed=True))
+        even_bytes[b[i]] += 1
+        odd_bytes[b[i+1]] += 1
 
     _buffer.extend(b)
 
@@ -107,7 +121,7 @@ if __name__ == '__main__':
       _buffer, out = von_neumann_extract(vn, _buffer, byte_interval)
     elif extract_method == 'hash':
       _buffer, out = hash_extract(h, _buffer, block_size)
-      
+
     # write state to output
     if _format == 'bytes':
       sys.stdout.buffer.write(out)
@@ -127,10 +141,27 @@ if __name__ == '__main__':
 
   # plot
   if plot:
+    
     import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    ax.plot(to_plot)
-    ax.set_facecolor('black')
-    fig.suptitle('raw signal over time')
+
+    fig, ax = plt.subplots(4)
+    fig.suptitle('ENSURE LITTLE ENDIANNESS')
+
+    ax[0].plot(to_plot_le)
+    ax[0].set_facecolor('black')
+    ax[0].set_title('raw signal over time, LITTLE ENDIAN')
+
+    ax[1].plot(to_plot_be)
+    ax[1].set_facecolor('black')
+    ax[1].set_title('raw signal over time, BIG ENDIAN')
+
+    ax[2].bar(list(even_bytes.keys()), list(even_bytes.values()))
+    ax[2].set_facecolor('black')
+    ax[2].set_title('even bytes')
+
+    ax[3].bar(list(odd_bytes.keys()), list(odd_bytes.values()))
+    ax[3].set_facecolor('black')
+    ax[3].set_title('odd bytes')
+
     plt.show()
 
